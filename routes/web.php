@@ -20,12 +20,13 @@ Route::get('/kontakt', function () {
     return view('ogolne.kontakt');
 })->name('kontakt'); 
 Route::get('/onas', function () {
-    return view('ogolne.onas');})->name('onas'); 
+    return view('ogolne.onas');})->name('onas')->middleware('auth'); 
 
 
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    //return view('dashboard');
+    return redirect()->route('start');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
