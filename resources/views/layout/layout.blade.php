@@ -73,7 +73,22 @@
                                 </div>
 
                                 <h2 class="mt-6 text-xl font-semibold text-gray-900">@yield('podtytul', "WSB")</h2>
-
+                                @if(session()->has('message'))
+                                <div
+                                    class="alert alert-@if(session()->has('class')){{session()->get('class')}}@else{{'success'}}@endif alert-dismissible fade show"
+                                    role="alert"
+                                >
+                                    <button
+                                        type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="alert"
+                                        aria-label="Close"
+                                    ></button>
+                                
+                                    <strong>{{session()->get('message')}}</strong>
+                                </div>
+                                
+                                @endif
                                 <p class="mt-4 text-gray-500 text-sm leading-relaxed">
                                     @yield('tresc','Brak treści')
                                 </p>

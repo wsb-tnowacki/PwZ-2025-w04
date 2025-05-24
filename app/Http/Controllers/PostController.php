@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostStoreRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->except('index','show');
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
-        return "index";
-
+        /* return "index"; */
+        $posty = Post::paginate(5);
+        return view('post.lista',compact('posty'));
     }
 
     /**
@@ -28,19 +33,22 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PostStoreRequest $request)
     {
-        //
-        //return 'store';
-        $request->validate([
+        /* $request->validate([
             'tytul' => 'required|min:3|max:200',
-            'autor' => 'required|min:3|max:100',
-            'email' => 'required|min:3|max:200|email:rfc,dns',
-            'tresc' => ['required','min:5']
-        ]);
+            'autor' => 'required|min:4|max:100',
+            'email' => ['required','min:3','max:200','email:dns,rfc'],
+            'tresc' => 'required|min:5'
+        ]); */
         $post = new Post();
+        /* $post->tytul = request('tytul');
+        $post->autor = request('autor');
+        $post->email = request('email');
+        $post->tresc = request('tresc');
+        $post->save(); */
         $post->create($request->all());
-        return redirect()->route('post.index');
+        return redirect()->route('post.index')->with('message',"Poprawnie dodano post");
     }
 
     /**
@@ -49,8 +57,8 @@ class PostController extends Controller
     public function show(Post $post)
     //public function show(string $post)
     {
-        //
-        echo $post;
+        //return "show - post: $post";
+        return view('post.pokaz',compact('post'));
     }
 
     /**
@@ -58,15 +66,18 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+       //return "edit - post: $post";
+       return view('post.edytuj',compact('post'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(PostStoreRequest $request, Post $post)
     {
-        //
+        //return "update - post: $post";
+        $post->update($request->all());
+        return redirect()->route('post.index')->with('message',"Poprawnie zmieniono post");
     }
 
     /**
@@ -74,6 +85,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        //return "destroy - post: $post";
+        $post->delete();
+        return redirect()->route('post.index')->with('message',"Poprawnie usunięto post")->with('class','danger');
     }
 }
